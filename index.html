@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>像素蛇</title>
+  <title>赛博蛇</title>
   <!-- Tailwind CSS v3 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome -->
@@ -14,23 +14,20 @@
       theme: {
         extend: {
           colors: {
-            primary: '#0EFF37',
-            secondary: '#37383C',
-            accent: '#0EFF37',
-            danger: '#ff4d4f',
-            success: '#52c41a',
-            dark: '#121212',
+            primary: '#00FFFF', // 霓虹蓝
+            secondary: '#FF00FF', // 霓虹粉
+            accent: '#FFFF00', // 霓虹黄
+            danger: '#FF0000', // 红色
+            success: '#00FF00', // 绿色
+            dark: '#0A0A0A', // 深黑色
             light: '#f0f2f5',
-            // 蛇身颜色 - 彩虹色
-            snakeRed: '#ff5252',
-            snakeOrange: '#ff9800',
-            snakeYellow: '#ffeb3b',
-            snakeGreen: '#4caf50',
-            snakeBlue: '#2196f3',
-            snakePurple: '#9c27b0',
+            // 蛇身颜色 - 赛博朋克霓虹渐变
+            snakeNeon1: '#00FFFF',
+            snakeNeon2: '#FF00FF',
+            snakeNeon3: '#FFFF00',
+            snakeNeon4: '#00FF00',
             // 食物颜色
-            food1: '#4caf50',
-            food2: '#4caf50',
+            foodNeon: '#FF00FF',
           },
           fontFamily: {
             pixel: ['Doto', 'monospace', 'system-ui'],
@@ -75,12 +72,14 @@
       line-height:64px;
     }
     @layer utilities {
+      /* 像素边框 */
       .pixel-borders {
         box-shadow: 
           -6px 0 0 0 theme('colors.secondary'),
           6px 0 0 0 theme('colors.secondary'),
           0 -6px 0 0 theme('colors.secondary'),
-          0 6px 0 0 theme('colors.secondary');
+          0 6px 0 0 theme('colors.secondary'),
+          0 0 10px theme('colors.primary');
       }
       .pixel-borders-hover {
         box-shadow: 
@@ -88,13 +87,15 @@
           6px 0 0 0 theme('colors.accent'),
           0 -6px 0 0 theme('colors.accent'),
           0 6px 0 0 theme('colors.accent'),
-          0 0 15px theme('colors.accent');
+          0 0 20px theme('colors.accent');
       }
+      /* 网格图案 */
       .grid-pattern {
-        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-                          linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        background-image: linear-gradient(to right, rgba(0, 255, 255, 0.2) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
         background-size: 30px 30px;
       }
+      /* 半调图案 */
       .half-tone {
         background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
         background-size: 8px 8px;
@@ -107,9 +108,11 @@
         background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
         background-size: 12px 12px;
       }
+      /* 复古渐变 */
       .retro-gradient {
         background: linear-gradient(135deg, #0f1a3d 0%, #1a2a6c 50%, #0f1a3d 100%);
       }
+      /* 像素按钮 */
       .pixel-button {
         position: relative;
         padding: 0.75rem 1.5rem;
@@ -121,11 +124,14 @@
         background-color: theme('colors.accent');
         color: theme('colors.dark');
         font-family: 'Doto', monospace;
-        box-shadow: 4px 4px 0px rgba(69, 101, 75, 1);
+        box-shadow: 4px 4px 0px rgba(0, 0, 0, 1),
+                    0 0 10px theme('colors.accent');
+        animation: pulse 2s infinite;
       }
       .pixel-button:hover {
         transform: translate(-2px, -2px);
-        box-shadow: 6px 6px 0px rgba(69, 101, 75, 1);
+        box-shadow: 6px 6px 0px rgba(0, 0, 0, 1),
+                    0 0 20px theme('colors.accent');
       }
       .pixel-button::before {
         content: '';
@@ -142,12 +148,104 @@
       .pixel-button:hover::before {
         transform: translateX(100%);
       }
+      /* 像素文字 */
       .pixel-text {
         font-family: 'Doto', monospace;
       }
+      /* 玻璃效果 */
       .glass-effect {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(0, 255, 255, 0.1);
         backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      }
+      /* 扫描线效果 */
+      .scanlines {
+        position: relative;
+        overflow: hidden;
+      }
+      .scanlines::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 255, 0.1),
+          rgba(0, 255, 255, 0.1) 1px,
+          transparent 1px,
+          transparent 2px
+        );
+        pointer-events: none;
+        z-index: 100;
+      }
+      /* 故障效果 */
+      .glitch {
+        animation: glitch 0.5s infinite;
+      }
+      /* 扫描动画 */
+      .scan-animation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.8), transparent);
+        animation: scan 3s linear infinite;
+        z-index: 50;
+        pointer-events: none;
+      }
+      /* 霓虹发光文字 */
+      .neon-text {
+        text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor, 0 0 20px currentColor;
+        animation: neon-pulse 1.5s ease-in-out infinite alternate;
+      }
+    }
+    /* 全局动画 */
+    @keyframes scan {
+      0% {
+        transform: translateY(-100%);
+      }
+      100% {
+        transform: translateY(100vh);
+      }
+    }
+    @keyframes glitch {
+      0%, 100% {
+        transform: translate(0);
+      }
+      20% {
+        transform: translate(-2px, 2px);
+      }
+      40% {
+        transform: translate(-2px, -2px);
+      }
+      60% {
+        transform: translate(2px, 2px);
+      }
+      80% {
+        transform: translate(2px, -2px);
+      }
+    }
+    @keyframes neon-pulse {
+      from {
+        text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor, 0 0 20px currentColor;
+      }
+      to {
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor, 0 0 40px currentColor;
+      }
+    }
+    /* 粒子动画 */
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.5;
+      }
+      50% {
+        transform: translateY(-20px) rotate(180deg);
+        opacity: 1;
       }
     }
   </style>
@@ -157,10 +255,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&amp;display=swap" rel="stylesheet">
 </head>
-<body class="bg-dark min-h-screen flex flex-col items-center justify-center p-4 text-light overflow-hidden">
-  <div class="w-full max-w-3xl mx-auto flex flex-col items-center">
+<body class="bg-dark min-h-screen flex flex-col items-center justify-center p-4 text-light overflow-hidden scanlines">
+  <!-- 扫描动画 -->
+  <div class="scan-animation"></div>
+  
+  <!-- 粒子效果Canvas -->
+  <canvas id="particlesCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+  
+  <div class="w-full max-w-3xl mx-auto flex flex-col items-center relative z-10">
     <!-- 游戏标题 -->
-    <h1 class="pixel-text text-4xl md:text-5xl font-bold text-center mb-4 text-accent line-height:64px" style="line-height: 64px;">像素蛇</h1>
     
     <!-- 游戏容器 -->
     <div id="game-container" class="relative overflow-hidden pixel-borders transition-all duration-300">
@@ -169,47 +272,48 @@
       
       <!-- 分数显示 -->
       <div id="score-container" class="absolute top-2 right-2 px-3 py-1 rounded glass-effect pixel-text text-xl">
-        分数: <span id="score" class="text-accent" style="color: rgb(14, 255, 55); font-size: 24px;">0</span>
+        分数: <span id="score" class="text-accent neon-text" style="color: rgb(255, 255, 0); font-size: 24px;">0</span>
       </div>
       
       <!-- 游戏开始遮罩 -->
-      <div id="start-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-dark bg-opacity-80 z-10">
-        <button id="start-button" class="pixel-button" style="font-size: 24px;">开始游戏</button>
+      <div id="start-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-dark bg-opacity-60 backdrop-blur-md z-10">
+        <h2 class="pixel-text text-5xl mb-8 text-primary neon-text">赛博蛇</h2>
+        <button id="start-button" class="pixel-button neon-text" style="font-size: 24px;">开始游戏</button>
       </div>
       
       <!-- 游戏结束遮罩 -->
-      <div id="game-over-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-dark bg-opacity-80 z-10 hidden">
-        <h2 class="pixel-text text-4xl mb-4 text-primary animate-blink" style="font-weight: bold;">游戏结束</h2>
-        <p class="pixel-text text-xl mb-2">最终得分: <span id="final-score" class="text-accent">0</span></p>
-        <button id="restart-button" class="pixel-button mt-6" style="font-size: 24px;">重新开始</button>
+      <div id="game-over-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-dark bg-opacity-60 backdrop-blur-md z-10 hidden">
+        <h2 class="pixel-text text-5xl mb-4 text-primary neon-text animate-blink" style="font-weight: bold;">游戏结束</h2>
+        <p class="pixel-text text-xl mb-2">最终得分: <span id="final-score" class="text-accent neon-text">0</span></p>
+        <button id="restart-button" class="pixel-button mt-6 neon-text" style="font-size: 24px;">重新开始</button>
       </div>
     </div>
     
     <!-- 操作说明 -->
-    <div class="mt-6 px-4 py-3 glass-effect w-full pixel-text">
-      <p class="text-center">使用 <span class="text-accent" style="color: rgb(14, 255, 55);">方向键 ↑ ↓ ← →</span> 控制蛇的移动，按空格键暂停</p>
+    <div class="mt-6 px-4 py-3 glass-effect w-full pixel-text neon-text">
+      <p class="text-center">使用 <span class="text-primary">方向键 ↑ ↓ ← →</span> 控制蛇的移动，按空格键暂停</p>
       <p class="text-center mt-2">吃到食物得分，蛇身会变长</p>
     </div>
     
     <!-- 移动端控制按钮 -->
     <div id="mobile-controls" class="mt-6 grid grid-cols-3 gap-2 w-full max-w-xs hidden">
       <div class="col-start-2">
-        <button id="up-button" class="w-full h-12 pixel-button flex items-center justify-center">
+        <button id="up-button" class="w-full h-12 pixel-button flex items-center justify-center neon-text">
           <i class="fa fa-arrow-up"></i>
         </button>
       </div>
       <div class="col-start-1">
-        <button id="left-button" class="w-full h-12 pixel-button flex items-center justify-center">
+        <button id="left-button" class="w-full h-12 pixel-button flex items-center justify-center neon-text">
           <i class="fa fa-arrow-left"></i>
         </button>
       </div>
       <div class="col-start-2">
-        <button id="down-button" class="w-full h-12 pixel-button flex items-center justify-center">
+        <button id="down-button" class="w-full h-12 pixel-button flex items-center justify-center neon-text">
           <i class="fa fa-arrow-down"></i>
         </button>
       </div>
       <div class="col-start-3">
-        <button id="right-button" class="w-full h-12 pixel-button flex items-center justify-center">
+        <button id="right-button" class="w-full h-12 pixel-button flex items-center justify-center neon-text">
           <i class="fa fa-arrow-right"></i>
         </button>
       </div>
@@ -219,10 +323,10 @@
     <div class="mt-4 flex flex-col items-center space-y-2">
       <div class="flex space-x-2">
         <input type="file" id="food-image-upload" accept="image/*" class="hidden">
-        <button id="upload-food-button" class="pixel-button text-sm">上传食物图片</button>
-        <button id="reset-food-image" class="pixel-button text-sm">恢复默认</button>
+        <button id="upload-food-button" class="pixel-button text-sm neon-text">上传食物图片</button>
+        <button id="reset-food-image" class="pixel-button text-sm neon-text">恢复默认</button>
       </div>
-      <div id="image-upload-status" class="text-xs text-center hidden"></div>
+      <div id="image-upload-status" class="text-xs text-center hidden neon-text"></div>
     </div>
   </div>
 
@@ -234,18 +338,20 @@
       speedIncrease: 5, // 每吃一个食物速度增加量（毫秒）
       minSpeed: 50, // 最小速度（毫秒）
       snakeColors: [
-        '#FF3E3E', // 红色
-        '#FF6F00', // 橙色
-        '#D5FF3B', // 黄色
-        '#46ED4D', // 绿色
-        '#3FAAFF', // 蓝色
-        '#AC53FF'  // 紫色
+        '#00FFFF', // 霓虹蓝
+        '#FF00FF', // 霓虹粉
+        '#FFFF00', // 霓虹黄
+        '#00FF00', // 霓虹绿
+        '#FF0000', // 红色
+        '#8A2BE2'  // 紫色
       ],
       foodColors: [
-        '#ffeb3b', // 黄色
-        '#ff9800'  // 橙色
+        '#FF00FF', // 霓虹粉
+        '#00FFFF', // 霓虹蓝
+        '#FFFF00', // 霓虹黄
+        '#FF0000'  // 红色
       ],
-      foodBlinkSpeed: 500, // 食物闪烁速度（毫秒）
+      foodBlinkSpeed: 300, // 食物闪烁速度（毫秒）
     };
     
     // 游戏状态
@@ -267,6 +373,9 @@
       gridHeight: 0,
       foodColorIndex: 0,
       foodBlinkTimer: null,
+      foodRotation: 0, // 食物旋转角度
+      foodPulse: 1, // 食物脉冲大小
+      foodPulseDirection: 1, // 脉冲方向
       explosions: [],
       customFoodImage: null, // 自定义食物图片
       defaultFoodImage: null // 默认食物图片
@@ -278,6 +387,7 @@
     // DOM 元素
     const elements = {
       canvas: document.getElementById('gameCanvas'),
+      particlesCanvas: document.getElementById('particlesCanvas'),
       scoreElement: document.getElementById('score'),
       finalScoreElement: document.getElementById('final-score'),
       startScreen: document.getElementById('start-screen'),
@@ -288,8 +398,106 @@
       mobileControls: document.getElementById('mobile-controls')
     };
     
+    // 粒子系统配置
+    const particlesConfig = {
+      particleCount: 50,
+      particleSize: 2,
+      particleSpeed: 0.5,
+      colors: ['#00FFFF', '#FF00FF', '#FFFF00', '#00FF00', '#FF0000']
+    };
+    
+    // 粒子系统状态
+    const particlesState = {
+      particles: [],
+      ctx: null,
+      width: 0,
+      height: 0
+    };
+    
+    // 初始化粒子系统
+    function initParticles() {
+      const canvas = elements.particlesCanvas;
+      particlesState.ctx = canvas.getContext('2d');
+      
+      // 设置画布大小
+      resizeParticlesCanvas();
+      
+      // 创建粒子
+      for (let i = 0; i < particlesConfig.particleCount; i++) {
+        createParticle();
+      }
+      
+      // 开始动画循环
+      animateParticles();
+      
+      // 监听窗口大小变化
+      window.addEventListener('resize', resizeParticlesCanvas);
+    }
+    
+    // 调整粒子画布大小
+    function resizeParticlesCanvas() {
+      const canvas = elements.particlesCanvas;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particlesState.width = canvas.width;
+      particlesState.height = canvas.height;
+    }
+    
+    // 创建粒子
+    function createParticle() {
+      particlesState.particles.push({
+        x: Math.random() * particlesState.width,
+        y: Math.random() * particlesState.height,
+        size: Math.random() * particlesConfig.particleSize + 1,
+        speedX: (Math.random() - 0.5) * particlesConfig.particleSpeed,
+        speedY: (Math.random() - 0.5) * particlesConfig.particleSpeed,
+        color: particlesConfig.colors[Math.floor(Math.random() * particlesConfig.colors.length)],
+        opacity: Math.random() * 0.5 + 0.2
+      });
+    }
+    
+    // 动画粒子
+    function animateParticles() {
+      const ctx = particlesState.ctx;
+      
+      // 清除画布
+      ctx.clearRect(0, 0, particlesState.width, particlesState.height);
+      
+      // 更新和绘制粒子
+      particlesState.particles.forEach((particle, index) => {
+        // 更新位置
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
+        
+        // 边界检测
+        if (particle.x < 0 || particle.x > particlesState.width) {
+          particle.speedX *= -1;
+        }
+        if (particle.y < 0 || particle.y > particlesState.height) {
+          particle.speedY *= -1;
+        }
+        
+        // 绘制粒子
+        ctx.save();
+        ctx.globalAlpha = particle.opacity;
+        ctx.fillStyle = particle.color;
+        ctx.shadowColor = particle.color;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+      
+      // 循环动画
+      requestAnimationFrame(animateParticles);
+    }
+    
     // 初始化游戏
     function initGame() {
+      // 初始化粒子系统
+      initParticles();
+      
       // 设置画布
       setupCanvas();
       
@@ -454,6 +662,9 @@
     function handleKeyDown(event) {
       if (gameState.isGameOver) return;
       
+      // 添加按键反馈效果
+      addKeyPressFeedback();
+      
       switch (event.key) {
         case 'ArrowUp':
           changeDirection('UP');
@@ -471,6 +682,19 @@
           togglePause();
           break;
       }
+    }
+    
+    // 添加按键反馈效果
+    function addKeyPressFeedback() {
+      const gameContainer = elements.gameContainer;
+      
+      // 添加闪烁效果
+      gameContainer.classList.add('pixel-borders-hover');
+      
+      // 移除闪烁效果
+      setTimeout(() => {
+        gameContainer.classList.remove('pixel-borders-hover');
+      }, 100);
     }
     
     // 改变方向
@@ -662,41 +886,43 @@
       return false;
     }
     
-    // 添加爆炸效果（像素风格）
+    // 添加爆炸效果（霓虹粒子风格）
     function addExplosion(x, y) {
-      // 创建像素爆炸效果的数据
-      const pixelExplosion = {
+      // 随机选择爆炸颜色
+      const explosionColors = config.snakeColors;
+      const color = explosionColors[Math.floor(Math.random() * explosionColors.length)];
+      
+      // 创建爆炸效果的数据
+      const particleExplosion = {
         x,
         y,
         frame: 0,
-        maxFrames: 12, // 爆炸动画帧数
-        pixelSize: config.gridSize / 6, // 像素格子大小
-        color: '#ffffff', // 爆炸像素颜色
-        pixels: [] // 存储所有像素格子的位置和透明度
+        maxFrames: 20, // 爆炸动画帧数
+        particles: [] // 存储所有爆炸粒子
       };
       
-      // 初始化爆炸像素格子
-      // 根据爆炸中心位置生成3x3、5x5或7x7的像素格子矩阵
-      const gridSize = 2 + Math.floor(Math.random() * 3) * 2; // 3, 5, 或 7
-      const offset = Math.floor(gridSize / 2);
-      
-      for (let dy = -offset; dy <= offset; dy++) {
-        for (let dx = -offset; dx <= offset; dx++) {
-          // 计算每个像素格子的位置和初始透明度
-          pixelExplosion.pixels.push({
-            dx,
-            dy,
-            opacity: 1,
-            // 随机决定是否显示这个像素，创建不规则爆炸效果
-            visible: Math.random() > 0.2
-          });
-        }
+      // 生成爆炸粒子
+      const particleCount = 30; // 粒子数量
+      for (let i = 0; i < particleCount; i++) {
+        // 随机角度和速度
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 3 + 1;
+        
+        particleExplosion.particles.push({
+          dx: Math.cos(angle) * speed,
+          dy: Math.sin(angle) * speed,
+          opacity: 1,
+          size: Math.random() * 4 + 2,
+          color: color,
+          life: 1, // 粒子生命值
+          decay: Math.random() * 0.05 + 0.02 // 衰减速度
+        });
       }
       
-      gameState.explosions.push(pixelExplosion);
+      gameState.explosions.push(particleExplosion);
     }
     
-    // 更新爆炸效果（像素风格）
+    // 更新爆炸效果（霓虹粒子风格）
     function updateExplosions() {
       for (let i = gameState.explosions.length - 1; i >= 0; i--) {
         const explosion = gameState.explosions[i];
@@ -704,26 +930,25 @@
         // 增加帧数
         explosion.frame++;
         
-        // 更新每个像素格子的状态
-        explosion.pixels.forEach(pixel => {
-          if (pixel.visible) {
-            // 随着爆炸进行，像素透明度逐渐降低
-            // 距离中心越远的像素消失得越快
-            const distance = Math.sqrt(pixel.dx * pixel.dx + pixel.dy * pixel.dy);
-            const distanceFactor = 1 - (distance / Math.sqrt(2) / 3); // 根据最大爆炸范围调整
-            
-            // 计算透明度衰减，考虑帧数和距离因素
-                        
-            // 确保透明度不小于0
-            
-          }
+        // 更新每个粒子的状态
+        explosion.particles.forEach(particle => {
+          // 应用重力和阻力
+          particle.dy += 0.1; // 重力
+          particle.dx *= 0.98; // 水平阻力
+          particle.dy *= 0.98; // 垂直阻力
+          
+          // 减少生命值
+          particle.life -= particle.decay;
+          
+          // 计算透明度
+          particle.opacity = particle.life;
         });
         
-        // 检查是否所有像素都已消失
-        const allPixelsInvisible = explosion.pixels.every(pixel => !pixel.visible);
+        // 检查是否所有粒子都已消失
+        const allParticlesDead = explosion.particles.every(particle => particle.life <= 0);
         
-        // 如果爆炸效果结束（帧数用完或所有像素消失），移除它
-        if (explosion.frame >= explosion.maxFrames || allPixelsInvisible) {
+        // 如果爆炸效果结束（帧数用完或所有粒子消失），移除它
+        if (explosion.frame >= explosion.maxFrames || allParticlesDead) {
           gameState.explosions.splice(i, 1);
         }
       }
@@ -786,50 +1011,67 @@
     function drawSnake(ctx, gridSize) {
       const snakeLength = gameState.snake.length;
       
+      // 绘制拖尾效果
+      for (let i = 1; i < snakeLength; i++) {
+        const segment = gameState.snake[i];
+        const opacity = 1 - (i / snakeLength) * 0.7;
+        
+        // 拖尾颜色使用当前段的颜色，但降低透明度
+        const colorIndex = Math.floor((gameState.score / 10 + i / snakeLength) % config.snakeColors.length);
+        const color = config.snakeColors[colorIndex];
+        
+        ctx.save();
+        ctx.globalAlpha = opacity * 0.3;
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 15;
+        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+        ctx.restore();
+      }
+      
+      // 绘制蛇身
       gameState.snake.forEach((segment, index) => {
         // 根据蛇的长度和位置选择颜色
         const colorIndex = Math.floor((gameState.score / 10 + index / snakeLength) % config.snakeColors.length);
         const color = config.snakeColors[colorIndex];
         
-        // 根据位置选择半调图案
-        const patternIndex = index % halftonePatterns.length;
-        const pattern = halftonePatterns[patternIndex];
+        // 绘制发光效果
+        ctx.save();
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 10;
         
         // 绘制蛇段
         ctx.fillStyle = color;
         ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
         
-        // 如果是蛇头，添加高亮效果
+        // 如果是蛇头，添加特殊效果
         if (index === 0) {
+          // 蛇头高亮边框
           ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
           ctx.lineWidth = 2;
           ctx.strokeRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+          
+          // 蛇头眼睛效果
+          const eyeSize = gridSize / 6;
+          const eyeOffset = gridSize / 3;
+          
+          // 左眼
+          ctx.fillStyle = 'black';
+          ctx.fillRect(
+            segment.x * gridSize + eyeOffset,
+            segment.y * gridSize + eyeOffset,
+            eyeSize, eyeSize
+          );
+          
+          // 右眼
+          ctx.fillRect(
+            segment.x * gridSize + gridSize - eyeOffset - eyeSize,
+            segment.y * gridSize + eyeOffset,
+            eyeSize, eyeSize
+          );
         }
         
-        // 添加半调图案
-        if (pattern) {
-          // 创建半调图案
-          const patternCanvas = document.createElement('canvas');
-          patternCanvas.width = gridSize;
-          patternCanvas.height = gridSize;
-          const patternCtx = patternCanvas.getContext('2d');
-          
-          // 根据图案类型绘制不同的半调效果
-          if (pattern === 'half-tone') {
-            drawHalftonePattern(patternCtx, gridSize, 4, 1);
-          } else if (pattern === 'half-tone-dense') {
-            drawHalftonePattern(patternCtx, gridSize, 2, 1);
-          } else if (pattern === 'half-tone-sparse') {
-            drawHalftonePattern(patternCtx, gridSize, 6, 1);
-          }
-          
-          // 创建图案
-          const texture = ctx.createPattern(patternCanvas, 'repeat');
-          
-          // 绘制图案
-          ctx.fillStyle = texture;
-          ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
-        }
+        ctx.restore();
       });
     }
     
@@ -856,92 +1098,142 @@
     // 绘制食物
     function drawFood(ctx, gridSize) {
       const food = gameState.food;
+      const color = config.foodColors[gameState.foodColorIndex];
+      
+      // 更新食物动画状态
+      gameState.foodRotation += 0.1;
+      gameState.foodPulse += 0.02 * gameState.foodPulseDirection;
+      
+      // 反转脉冲方向
+      if (gameState.foodPulse > 1.2 || gameState.foodPulse < 0.8) {
+        gameState.foodPulseDirection *= -1;
+      }
+      
+      // 保存当前上下文状态
+      ctx.save();
+      
+      // 计算食物中心位置
+      const centerX = (food.x + 0.5) * gridSize;
+      const centerY = (food.y + 0.5) * gridSize;
+      
+      // 绘制脉冲波纹效果
+      for (let i = 0; i < 3; i++) {
+        const rippleSize = (i + 1) * 0.5;
+        const rippleOpacity = 0.3 - (i * 0.1);
+        const rippleRadius = gridSize * (1 + rippleSize * gameState.foodPulse * 0.5);
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, rippleRadius / 2, 0, Math.PI * 2);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = rippleOpacity;
+        ctx.stroke();
+      }
+      
+      // 恢复透明度
+      ctx.globalAlpha = 1;
+      
+      // 平移到食物中心
+      ctx.translate(centerX, centerY);
+      
+      // 应用旋转
+      ctx.rotate(gameState.foodRotation);
+      
+      // 应用脉冲缩放
+      ctx.scale(gameState.foodPulse, gameState.foodPulse);
+      
+      // 设置发光效果
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 15;
       
       // 检查是否有自定义食物图片
       if (gameState.customFoodImage && gameState.customFoodImage.complete) {
-        // 绘制自定义食物图片
+        // 绘制自定义食物图片（居中）
         ctx.drawImage(
           gameState.customFoodImage, 
-          food.x * gridSize, 
-          food.y * gridSize, 
+          -gridSize / 2, 
+          -gridSize / 2, 
           gridSize, 
           gridSize
         );
       } else {
-        // 使用像素风格樱桃图片
-        const cherryImage = new Image();
-        cherryImage.src = 'https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/42ba020e55fd44dd98d8ddcfc882b6ec.png~tplv-a9rns2rl98-image-qvalue.image?rcl=2025091814571282B9F17558F2AE9C3BEC&rk3s=8e244e95&rrcfp=b669a9d6&x-expires=1758265032&x-signature=H1vJ%2F1cJOsieMUfYgZVTepHJVt0%3D';
+        // 使用备用方法绘制食物
+        // 绘制食物主体
+        ctx.fillStyle = color;
+        ctx.fillRect(-gridSize / 2, -gridSize / 2, gridSize, gridSize);
         
-        // 直接绘制图片（如果已缓存）
-        if (cherryImage.complete) {
-          ctx.drawImage(cherryImage, food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-        } else {
-          // 使用备用方法绘制食物
-          const color = config.foodColors[gameState.foodColorIndex];
-          
-          // 绘制食物
-          ctx.fillStyle = color;
-          ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-          
-          // 添加闪烁效果
-          const gradient = ctx.createLinearGradient(
-            food.x * gridSize, 
-            food.y * gridSize, 
-            (food.x + 1) * gridSize, 
-            (food.y + 1) * gridSize
-          );
-          gradient.addColorStop(0, color);
-          gradient.addColorStop(1, 'rgba(255, 255, 255, 0.5)');
-          
-          ctx.fillStyle = gradient;
-          ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-          
-          // 添加半调图案
-          const patternCanvas = document.createElement('canvas');
-          patternCanvas.width = gridSize;
-          patternCanvas.height = gridSize;
-          const patternCtx = patternCanvas.getContext('2d');
-          
-          drawHalftonePattern(patternCtx, gridSize, 6, 0.2);
-          
-          const texture = ctx.createPattern(patternCanvas, 'repeat');
-          ctx.fillStyle = texture;
-          ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-        }
+        // 添加高光效果
+        const gradient = ctx.createLinearGradient(
+          -gridSize / 2, 
+          -gridSize / 2, 
+          gridSize / 2, 
+          gridSize / 2
+        );
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0.8)');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(-gridSize / 2, -gridSize / 2, gridSize, gridSize);
+        
+        // 添加十字高光
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 2;
+        
+        // 水平线
+        ctx.beginPath();
+        ctx.moveTo(-gridSize / 3, 0);
+        ctx.lineTo(gridSize / 3, 0);
+        ctx.stroke();
+        
+        // 垂直线
+        ctx.beginPath();
+        ctx.moveTo(0, -gridSize / 3);
+        ctx.lineTo(0, gridSize / 3);
+        ctx.stroke();
       }
+      
+      // 恢复上下文状态
+      ctx.restore();
     }
     
-    // 绘制爆炸效果（像素风格）
+    // 绘制爆炸效果（霓虹粒子风格）
     function drawExplosions(ctx, gridSize) {
       gameState.explosions.forEach(explosion => {
         // 计算爆炸中心位置（像素坐标）
         const centerX = (explosion.x + 0.5) * gridSize;
         const centerY = (explosion.y + 0.5) * gridSize;
         
-        // 绘制每个像素格子
-        explosion.pixels.forEach(pixel => {
-          if (pixel.visible && pixel.opacity > 0) {
+        // 绘制每个粒子
+        explosion.particles.forEach(particle => {
+          if (particle.life > 0) {
             ctx.save();
             
-            // 设置像素透明度
-            ctx.globalAlpha = pixel.opacity;
+            // 设置粒子透明度
+            ctx.globalAlpha = particle.opacity;
             
-            // 设置像素颜色
-            ctx.fillStyle = explosion.color;
+            // 设置发光效果
+            ctx.shadowColor = particle.color;
+            ctx.shadowBlur = 10;
             
-            // 计算像素格子的位置
-            // 根据帧数让像素向外扩散
-            const spreadFactor = 1 + (explosion.frame / explosion.maxFrames) * 2;
-            const pixelX = centerX + pixel.dx * explosion.pixelSize * spreadFactor;
-            const pixelY = centerY + pixel.dy * explosion.pixelSize * spreadFactor;
+            // 设置粒子颜色
+            ctx.fillStyle = particle.color;
             
-            // 绘制正方形像素格子
-            ctx.fillRect(
-              pixelX - explosion.pixelSize / 2,
-              pixelY - explosion.pixelSize / 2,
-              explosion.pixelSize,
-              explosion.pixelSize
-            );
+            // 计算粒子位置
+            const particleX = centerX + particle.dx * explosion.frame;
+            const particleY = centerY + particle.dy * explosion.frame;
+            
+            // 绘制圆形粒子
+            ctx.beginPath();
+            ctx.arc(particleX, particleY, particle.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 绘制粒子拖尾
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(particleX, particleY);
+            ctx.strokeStyle = particle.color;
+            ctx.lineWidth = particle.size / 2;
+            ctx.stroke();
             
             ctx.restore();
           }
@@ -951,18 +1243,23 @@
     
     // 绘制暂停屏幕
     function drawPauseScreen(ctx) {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      // 半透明背景
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
       ctx.fillRect(0, 0, gameState.canvas.width, gameState.canvas.height);
       
-      ctx.font = '40px VT323, monospace';
-      ctx.fillStyle = '#ffeb3b';
+      // 霓虹文字效果
+      ctx.font = '50px Doto, monospace';
+      ctx.fillStyle = '#00FFFF';
+      ctx.shadowColor = '#00FFFF';
+      ctx.shadowBlur = 15;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('暂停', gameState.canvas.width / 2, gameState.canvas.height / 2);
       
-      ctx.font = '20px VT323, monospace';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText('按空格键继续', gameState.canvas.width / 2, gameState.canvas.height / 2 + 50);
+      ctx.font = '24px Doto, monospace';
+      ctx.fillStyle = '#FF00FF';
+      ctx.shadowColor = '#FF00FF';
+      ctx.fillText('按空格键继续', gameState.canvas.width / 2, gameState.canvas.height / 2 + 60);
     }
     
     // 初始化游戏
